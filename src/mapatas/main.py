@@ -11,9 +11,6 @@
 import sys
 import csv
 import logging
-import asyncio
-import time
-from typing import Annotated
 from io import StringIO 
 
 # -------------------
@@ -21,7 +18,7 @@ from io import StringIO
 # -------------------
 
 import uvicorn
-from fastapi import FastAPI, Body, Request
+from fastapi import FastAPI, File, UploadFile
 from lica.cli import configure_logging, arg_parser
 
 
@@ -33,24 +30,21 @@ log = logging.getLogger(__name__.split('.')[-1])
 app = FastAPI()
 
 
-
-
-
 @app.get("/")
 async def index() -> dict:
-    log.info("Requesiting the index endpoint")
-    return {"message": "Hello Wortld!"}
+    log.info("Requesting the index endpoint")
+    return {"message": "Hello World!"}
 
+# The argiument name 'readings' must be coincident with the 
+# imput form field name used in curl
 @app.post("/upload")
-async def get_tas_file(tas_data: Annotated[str, Body()]) -> dict:
+async def get_tas_file(readings: UploadFile = File(...)) -> dict:
     log.info("Parsing the TAS file")
-    log.info(tas_data)
-    with StringIO(tas_data) as csvfile:
-        reader = csv.reader(csvfile, delimiter="\t")
-        for i, line in enumerate(reader):
-            #log.info("%d %s", i, line)
-            pass
-    return {"result": "Ok", "readings": 0}
+    contents = await readings.read()
+    with StringIO(contents.decode(encoding="ascii")) as csvfile:
+        # Reads the tabbed CSV file and skip the firs line
+        lines = [line for line in csv.reader(csvfile, delimiter="\t")][1:]
+    return {"result": "Ok", "readings": len(lines), "first": lines[0], "last": lines[-1]}
 
 
 

@@ -111,4 +111,4 @@ env-restore bak_dir:
 do_post file url:
     #!/usr/bin/env bash
     set -euxo pipefail
-    curl -X POST  -F file1=@{{file}} {{url}}
+    curl -X POST  -F readings=@{{file}} {{url}}
