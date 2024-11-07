@@ -38,7 +38,7 @@ async def index() -> dict:
 # The argiument name 'readings' must be coincident with the 
 # imput form field name used in curl
 @app.post("/upload")
-async def get_tas_file(readings: UploadFile = File(...)) -> dict:
+async def get_tas_file(readings: UploadFile) -> dict:
     log.info("Parsing the TAS file")
     contents = await readings.read()
     with StringIO(contents.decode(encoding="ascii")) as csvfile:
