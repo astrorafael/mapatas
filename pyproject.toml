@@ -1,0 +1,26 @@
+[project]
+name = "mapatas"
+dynamic = ["version"]
+description = "NixNox/TAS Maps Web Service"
+readme = "README.md"
+authors = [
+    { name = "Rafael Gonzalez", email = "astrorafael@gmail.com" }
+]
+requires-python = ">=3.9"
+dependencies = [
+    "fastapi[all]",
+    "lica",
+    "python-multipart"
+]
+
+[project.scripts]
+mapatas = "mapatas.main:main"
+tasfile = "mapatas.main:load"
+
+
+[build-system]
+requires = ["setuptools >= 45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "src/mapatas/_version.py"
